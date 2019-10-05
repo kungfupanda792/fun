@@ -3,11 +3,15 @@ package com.head.h1.fun2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -20,11 +24,27 @@ private int id;
     @Column(name="Name")
 private String name;
     @Column(name="desi")
+  
 private String desi;
-    @Column(name="j_id")
-private int j_id;
-    @Column(name="pid")
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name="jid")
+public detail2 jid;
+
+    public detail2 getJid() {
+	return jid;
+}
+
+public void setJid(detail2 jid) {
+	this.jid = jid;
+}
+ @JsonIgnore
+	@Column(name="pid")
 private int pid;
+ 
+ public Empl() {}
+ 
+ 
 
     public int getId() {
         return id;
@@ -50,13 +70,7 @@ private int pid;
         this.desi = desi;
     }
 
-    public int getJ_id() {
-        return j_id;
-    }
 
-    public void setJ_id(int j_id) {
-        this.j_id = j_id;
-    }
 
     public int getPid() {
         return pid;

@@ -1,15 +1,3 @@
-insert into details values(1,'Director',1,'Thor',0)
-insert into details values(2,'Manager',2,'IronMan',1)
-insert into details values(3,'Lead',3,'Hulk',1)
-insert into details values(4,'Manager',2,'CaptainAmerica',1)
-insert into details values(5,'QA',4,'WarMachine',2)
-insert into details values(6,'DevOPS',4,'Vision',2)
-insert into details values(7,'Developer',4,'Falcon',4)
-insert into details values(8,'Lead',3,'AntMan',4)
-insert into details values(9,'Developer',4,'BlackWidow',3)
-insert into details values(10,'Intern',5,'SpiderMan',2)
-
-
 insert into detail2 values(1,'Director',10)
 insert into detail2 values(2,'Manager',20)
 insert into detail2 values(3,'Lead',30)
@@ -17,3 +5,17 @@ insert into detail2 values(4,'Developer',40)
 insert into detail2 values(5,'QA',40)
 insert into detail2 values(6,'DevOps',40)
 insert into detail2 values(7,'Intern',50)
+
+insert into details values(1,'Director','Thor',0,1)
+insert into details values(2,'Manager','IronMan',1,2)
+insert into details values(3,'Lead','Hulk',1,3)
+insert into details values(4,'Manager','CaptainAmerica',1,2)
+insert into details values(5,'QA','WarMachine',2,5)
+insert into details values(6,'DevOPS','Vision',2,6)
+insert into details values(7,'Developer','Falcon',4,4)
+insert into details values(8,'Lead','AntMan',4,3)
+insert into details values(9,'Developer','BlackWidow',3,4)
+insert into details values(10,'Intern','SpiderMan',2,5)
+
+
+

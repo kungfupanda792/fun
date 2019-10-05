@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 //import javax.persistence.GeneratedValue;
 //import javax.persistence.GenerationType;
 //import javax.persistence.Id;
@@ -15,17 +16,19 @@ import javax.persistence.Table;
 public class detail2 {
 @Id
 @GeneratedValue(strategy=GenerationType.IDENTITY)
-@Column(name="j_id")
-private int j_id;
-@Column(name="desig")
-private String desig;
+@JoinColumn
+private int jid;
+
+@Column(name="desi")
+private String desi;
+
 @Column(name="lid")
 private float lid;
 
-public int getLid() {
+public float getLid() {
 	return lid;
 }
-public void setLid(int lid) {
+public void setLid(float lid) {
 	this.lid = lid;
 }
 public String getDesig() {
@@ -34,12 +37,9 @@ public String getDesig() {
 public void setDesig(String desig) {
 	this.desig = desig;
 }
-public int getJ_id() {
-	return j_id;
+public int getJid() {
+	return jid;
 }
 public void setJ_id(int j_id) {
-	this.j_id = j_id;
-}
-	
-	
-}
+	this.jid = jid;
+}}
