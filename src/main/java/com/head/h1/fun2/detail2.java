@@ -31,11 +31,11 @@ public float getLid() {
 public void setLid(float lid) {
 	this.lid = lid;
 }
-public String getDesig() {
-	return desig;
+public String getDesi() {
+	return desi;
 }
-public void setDesig(String desig) {
-	this.desig = desig;
+public void setDesi(String desig) {
+	this.desi = desig;
 }
 public int getJid() {
 	return jid;

@@ -12,8 +12,11 @@ import java.util.Optional;
 @Repository
 public interface record extends JpaRepository<Empl, Integer> {
 	Empl findById(int id);
-	List<Empl> findAllByPidOrderByIdAsc(int id);
+	List<Empl> findAllByPidOrderByNameAscDesiAsc(int id);
+	List<Empl> findAll(int id);
+
 
 //List<Empl> findAllbypidOrderByidAscgroupByName(int id);
 List<Empl> findAllByPid(int id);
+Empl findByPid(int id);
 }

@@ -7,6 +7,16 @@ private String desi=null;
 private Integer pid=null;
 private boolean replace=false;
 
+	public boolean isDelete() {
+		return delete;
+	}
+
+	public void setDelete(boolean delete) {
+		this.delete = delete;
+	}
+
+	private boolean delete=false;
+
 public Integer getId() {
 	return id;
 }

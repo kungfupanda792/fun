@@ -4,6 +4,7 @@ package com.head.h1.fun2;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,7 +25,7 @@ private int id;
     @Column(name="Name")
 private String name;
     @Column(name="desi")
-  
+  @Nullable
 private String desi;
     @JsonIgnore
     @OneToOne
@@ -40,7 +41,8 @@ public void setJid(detail2 jid) {
 }
  @JsonIgnore
 	@Column(name="pid")
-private int pid;
+ @Nullable
+ private int pid;
  
  public Empl() {}
  
