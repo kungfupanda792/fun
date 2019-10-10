@@ -1,28 +1,23 @@
-package com.head.h1.controller;
+package com.controller;
 
 import java.util.*;
-
-import javax.sound.midi.MidiDevice.Info;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.StreamingHttpOutputMessage.Body;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.head.h1.fun2.Empl;
-import com.head.h1.fun2.detail2;
-import com.head.h1.inter.record;
-import com.head.h1.inter.record2;
-import com.head.h1.fun2.Infos;
+import com.f.Empl;
+import com.f.detail2;
+import com.inter.record;
+import com.inter.record2;
+import com.f.Infos;
 
 @RestController
 public class control {
@@ -51,25 +46,23 @@ public class control {
 
 // Request and Response for get call
 
-	@GetMapping(path = "/rest/employees/get/{empid}")
-	public ResponseEntity get(@PathVariable("empid") int empid) {
+	@GetMapping(path = "/rest/employees/get/{id}")
+	public ResponseEntity get(@PathVariable("id") int empid) {
 		Map<String, Object> hm = new LinkedHashMap<>();
+		if(empid<=0)
+		{
+			return new ResponseEntity("Invalid Employee Id,can't be zero or -ive",HttpStatus.BAD_REQUEST);
+		}
 		Empl e = r.findById(empid);
-		if (e == null) {
+		if (e == null)
+		{
 			return new ResponseEntity("Enter the employee Id",HttpStatus.NO_CONTENT);
 		}
-		int a=e.getId();
-		if(a<0 || a==0)
-		{
-          return new ResponseEntity("Invalid Employee Id",HttpStatus.BAD_REQUEST);
-		}
-
-
 
 		//detail
 
 		String g = e.getName();
-		hm.put(i, e);
+		hm.put(g, e);
 		int p = e.getPid();
 
 
@@ -85,7 +78,7 @@ public class control {
 		//colleague
 
 		List<Empl> e1 = r.findAllByPidOrderByNameAscDesiAsc(p);
-		if (!(e1==null)) {
+		if ((e1!=null)) {
 			List<Empl> p2 = friend(e1, empid);
 			hm.put("colleague", p2);
 		}
@@ -164,8 +157,8 @@ public class control {
 			return new ResponseEntity("Designation cannot be same or higher", HttpStatus.BAD_REQUEST);
 		  }
 
-		 r.save(e);
-		 return new ResponseEntity(e, HttpStatus.OK);
+		   r.save(e);
+		   return new ResponseEntity(e, HttpStatus.OK);
 
 	}
 
@@ -180,7 +173,7 @@ public ResponseEntity delete(@PathVariable("id") int id) {
 	Empl e=r.findById(id);
 	   if(e==null)
 	   {
-	     return new ResponseEntity("No such record exist",HttpStatus.BAD_REQUEST);
+	     return new ResponseEntity("No such record exist",HttpStatus.NO_CONTENT);
 	   }
 
 	   else

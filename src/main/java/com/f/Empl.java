@@ -1,10 +1,9 @@
-package com.head.h1.fun2;
+package com.f;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.f.detail2;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.lang.Nullable;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,11 +21,10 @@ public class Empl {
     @Column(name="e_id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 private int id;
-    @Column(name="Name")
+    @Column(name="Name",nullable = false)
 private String name;
-    @Column(name="desi")
-  @Nullable
-private String desi;
+    @Column(name="desi",nullable = false)
+    private String desi ;
     @JsonIgnore
     @OneToOne
     @JoinColumn(name="jid")
@@ -41,7 +39,6 @@ public void setJid(detail2 jid) {
 }
  @JsonIgnore
 	@Column(name="pid")
- @Nullable
  private int pid;
  
  public Empl() {}

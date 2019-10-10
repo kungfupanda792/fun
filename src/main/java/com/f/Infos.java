@@ -1,4 +1,4 @@
-package com.head.h1.fun2;
+package com.f;
 
 public class Infos {
 private Integer id=-1;

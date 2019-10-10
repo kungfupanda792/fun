@@ -1,4 +1,4 @@
-package com.head.h1.fun2;
+package com.f;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
