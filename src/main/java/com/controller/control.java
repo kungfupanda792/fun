@@ -3,18 +3,13 @@ package com.controller;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.f.Empl;
-import com.f.detail2;
+import com.f.Employee;
+import com.f.Designation;
 import com.inter.record;
 import com.inter.record2;
 import com.f.Infos;
@@ -23,254 +18,355 @@ import com.f.Infos;
 public class control {
 
 	@Autowired
-	public record r;
-	public detail2 d = new detail2();
+	public record emprepo;
+	Designation designation1 = new Designation();
 
 	@Autowired
-	public record2 rs;
-	detail2 d2 = new detail2();
+	public record2 desrepo;
+	Designation designation = new Designation();
 
-// Add data (get call)
+    // Add data (get call)
 
-	public List<Empl> friend(List<Empl> ob, int id) {
-		List<Empl> a = new ArrayList<>();
+	public List<Employee> friend(List<Employee> ob, int id) {
+		List<Employee> a = new ArrayList<>();
 		for (int i = 0; i < ob.size(); i++) {
-			Empl e = ob.get(i);
+			Employee e = ob.get(i);
 			if (e.getId() != id) {
-				a.add(e);
-			}
+				a.add(e); }
 		}
 		return a;
 	}
 
 
-// Request and Response for get call
+	// Request and Response for get call
 
-	@GetMapping(path = "/rest/employees/get/{id}")
+	@GetMapping(path = "/employees/{id}")
 	public ResponseEntity get(@PathVariable("id") int empid) {
+		Employee e2 = emprepo.findById(empid);
 		Map<String, Object> hm = new LinkedHashMap<>();
+
 		if(empid<=0)
 		{
 			return new ResponseEntity("Invalid Employee Id,can't be zero or -ive",HttpStatus.BAD_REQUEST);
 		}
-		Empl e = r.findById(empid);
-		if (e == null)
-		{
-			return new ResponseEntity("Enter the employee Id",HttpStatus.NO_CONTENT);
+
+		if(e2==null){
+			 return  new ResponseEntity("No Record Exist",HttpStatus.NOT_FOUND);
 		}
 
 		//detail
-
-		String g = e.getName();
-		hm.put(g, e);
-		int p = e.getPid();
+		String g = e2.getName();
+		hm.put("employee", e2);
+		int p = e2.getManagerId();
 
 
 		//manager
-
-		Empl e4 = r.findById(p);
+		Employee e4 = emprepo.findById(p);
 		if (e4 == null) {
 		} else {
 			hm.put("manager", e4);
 		}
 
-
 		//colleague
-
-		List<Empl> e1 = r.findAllByPidOrderByNameAscDesiAsc(p);
-		if ((e1!=null)) {
-			List<Empl> p2 = friend(e1, empid);
-			hm.put("colleague", p2);
+		List<Employee> e1 = emprepo.findAllByManagerId(p,Sort.by("jid","name").ascending());
+		if ((e1 != null)) {
+			List<Employee> p2 = friend(e1, empid);
+			hm.put("colleagues", p2);
 		}
 
 		//child
-
-		List<Empl> e2 = r.findAllByPidOrderByNameAscDesiAsc(empid);
-		if (e2 != null) {
-		 } else {
-			hm.put("Reportees", e2);
+		List<Employee> e3 = emprepo.findAllByManagerId(empid,Sort.by("jid","name").ascending());
+		if (e3 != null) {
+			hm.put("subordinates", e3);
 		}
 
 		return new ResponseEntity(hm,HttpStatus.OK);
 	}
 
 
-// Get ALl Mapping
-// Request and Response for all information
+    // Get All Mapping
+    // Request and Response for all information
 
-	@GetMapping("/rest/employees/all")
+	@RequestMapping (value = "/employees",method = RequestMethod.GET)
 	public ResponseEntity getAll()
 	{
-		List<Empl> l = r.findAll();
-		if(l==null)
-		{
-			return new ResponseEntity("No data Present",HttpStatus.NO_CONTENT);
-		}
+		Iterable<Employee> l = emprepo.findAllByOrderByJid_lidAscNameAsc();
 		return new ResponseEntity(l,HttpStatus.OK);
 	}
 
 
-//Response and Request for post call
+	//Response and Request for post call
+	//Post Mapping
 
-//Post Mapping
-
-	@PostMapping(path = "/rest/employees/post", consumes = {"application/json"})
-	public ResponseEntity post(@RequestBody Infos em)
-
-	{
+	@PostMapping(path="/employees")
+	public ResponseEntity post(@RequestBody Infos em) {
 		int a = 0;
-		float l=0;
-		if (em.getName() == null || em.getDesi() == null || em.getPid() == null)
+		float l = 0;
+		if(em.getName()==null)
 		{
-			return new ResponseEntity("Fields can't be empty", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity("NO name entered",HttpStatus.BAD_REQUEST);
 		}
-		Empl e = new Empl();
-		e.setName(em.getName());
-		e.setPid(em.getPid());
-		e.setDesi(em.getDesi());
-		d = rs.findBydesi(em.getDesi());
-		Empl e2 = r.findById(e.getPid());
-		detail2 d4=rs.findBydesi(e2.getDesi());
-		/*Empl e4=r.findByPid(e2.getId());
-		detail2 d2=rs.findBydesi(e4.getDesi());*/
-		if (d == null)
+		if(em.getManagerId()==null)
 		{
-			detail2 d3 = new detail2();
-			d3.setDesi(em.getDesi());
-			l=d4.getLid();
-			float n = (2*l+10) / 2;
-			d3.setLid(n);
-			rs.save(d3);
-			e.setJid(d3);
-			a = d3.getJid();
+			return new ResponseEntity("No manager id ",HttpStatus.BAD_REQUEST);
 		}
-		else
+		if(em.getJobTitle()==null)
+		{
+			return new ResponseEntity("No job title",HttpStatus.BAD_REQUEST);
+		}
+
+		if(!em.getName().matches("^[ A-Za-z]+$"))
+		{
+			System.err.println(em.getName());
+			return new ResponseEntity(
+					"Name not found",HttpStatus.BAD_REQUEST);
+		}
+
+		List<Employee> emplist = emprepo.findAll();
+		if (emplist.isEmpty()) {
+			if (em.getJobTitle().equals("Director")) {
+				if(em.getManagerId()==-1) {
+					Employee e = new Employee();
+					e.setName(em.getName());
+					Designation designation = desrepo.findByJobTitle(em.getJobTitle());
+					e.setJid(designation);
+					e.setManagerId(-1);
+					emprepo.save(e);
+					return new ResponseEntity("Director Inserted", HttpStatus.CREATED);
+				}
+				else
+				{
+					return new ResponseEntity("Director can not have any Manager",HttpStatus.BAD_REQUEST);
+				}
+			}
+
+			else{
+				return  new ResponseEntity("No designation before director can be inserted",HttpStatus.BAD_REQUEST);
+			}
+		}
+
+		if(em.getJobTitle().equals("Director"))
+		{
+				return new ResponseEntity("Director is already present",HttpStatus.BAD_REQUEST);
+		}
+
+
+    	/*Employee e1= emprepo.findByJid(g);
+    	if(e1.getManagerId()==-1){
+    		return new ResponseEntity("only one director can exist",HttpStatus.BAD_REQUEST);
+		}*/
+			Employee e = new Employee();
+
+			if(em.getManagerId()<0){
+				return  new ResponseEntity("Invalid Manager id",HttpStatus.BAD_REQUEST);
+			}
+
+		    e.setName(em.getName());
+			int p = em.getManagerId();
+
+			// to get record related to entered designation
+			designation1 = desrepo.findByJobTitle(em.getJobTitle());
+
+			// Get record related to Parent
+			Employee e2 = emprepo.findById(p);
+
+			if (designation1 == null)
 			{
-			e.setJid(d);
-			a = d.getJid();
-	    	}
+				return new ResponseEntity("Designation  does not exist", HttpStatus.BAD_REQUEST);
+			}
+			e.setManagerId(em.getManagerId());
+			e.setJid(designation1);
+			a = designation1.getJid();
+
+			if (e2 != null)
+			{
+				int b = e2.getJid().getJid();
+				if (a <= b)
+				{
+					return new ResponseEntity("Designation cannot be same or higher", HttpStatus.BAD_REQUEST);
+				}
+			}
+			else
+			{
+				System.err.println(e.getName());
+				return  new ResponseEntity("no such record",HttpStatus.BAD_REQUEST);
+			}
+
+			emprepo.save(e);
+			return new ResponseEntity(e,HttpStatus.CREATED);
+		}
 
 
-		   int b = e2.getJid().getJid();
-		   if (a <= b)
-		  {
-			return new ResponseEntity("Designation cannot be same or higher", HttpStatus.BAD_REQUEST);
-		  }
+    //  Request and Response for delete call
+    //  Delete Mapping
 
-		   r.save(e);
-		   return new ResponseEntity(e, HttpStatus.OK);
+    @DeleteMapping(value="/employees/{id}")
+    public ResponseEntity delete(@PathVariable("id") int id) {
+		if(id<=0)
+		{
+			return new ResponseEntity("Invalid id",HttpStatus.BAD_REQUEST);
+		}
+		Employee e=emprepo.findById(id);
 
-	}
+		if(e==null)
+		{
+			return new ResponseEntity("No such record exist",HttpStatus.NOT_FOUND);
+		}
+
+		if(e.getJid().getJobTitle().equals("Director"))
+		{
+			return new ResponseEntity("Invalid record for deletion, can't delete Director",HttpStatus.BAD_REQUEST);
+		}
 
 
-
-//  Request and Response for delete call
-
-//  Delete Mapping
-
-@DeleteMapping(value="/rest/employees/del/{id}")
-public ResponseEntity delete(@PathVariable("id") int id) {
-	Empl e=r.findById(id);
-	   if(e==null)
-	   {
-	     return new ResponseEntity("No such record exist",HttpStatus.NO_CONTENT);
-	   }
-
-	   else
-	   	{
-           int p=e.getPid();
-	       String s=e.getDesi();
-
-	       if(s.equals("Director"))
-	       {
-		     return new ResponseEntity("Invalid record for deletion, can't delete Director",HttpStatus.BAD_REQUEST);
-	       }
-
-	       List<Empl> l=r.findAllByPid(id);
+           int p=e.getManagerId();
+		List<Employee> l=emprepo.findAllByManagerId(id,Sort.by("name"));
 	       for(int i=0;i<l.size();i++)
 	       {
-		        Empl e2=l.get(i);
-		        e2.setPid(p);
+		        Employee e2=l.get(i);
+		        e2.setManagerId(p);
 	       }
+	       emprepo.deleteById(id);
+	       return new ResponseEntity(e,HttpStatus.NO_CONTENT);
 
-	       r.deleteById(id);
-	       return new ResponseEntity( "Record deleted",HttpStatus.OK);
-         }
-  }
+    }
 
 
-// Request and Response for put call
+      // Request and Response for put call
+	 //  Put Mapping
 
-// Put Mapping
-
-@PutMapping ("/rest/employees/put/{id}")
-public ResponseEntity put(@RequestBody Infos t,@PathVariable("id") int id)
+    @PutMapping ("/employees/{id}")
+    public ResponseEntity put(@RequestBody Infos t,@PathVariable("id") int id)
      {
-	   Empl e=r.findById(id);
+     	//int u=id;
+		 Employee employee=emprepo.findById(id);
+		 if(t.getName()==null && t.getJobTitle()==null && t.getManagerId()==null && t.isReplace()==false)
+		 {
+		    return new ResponseEntity("No Data Entered",HttpStatus.BAD_REQUEST);
+		 }
+		 System.err.println(t.getManagerId());
+		 if(t.getManagerId()<0)
+		 {
+		    return new ResponseEntity("Invalid ManagerID",HttpStatus.BAD_REQUEST);
+		 }
 
-//	      int u=id;
-         if(t.isReplace())
-         {
+		 if(employee!=null)
+		 {
+            if(t.isReplace())
+               {
+            	 if(t.getJobTitle().equals("Director")){
+            	 	return new ResponseEntity("Director desi can't be changed",HttpStatus.BAD_REQUEST);
+				 }
+            	 Designation designation2=desrepo.findByJobTitle(t.getJobTitle());
+            	 if(designation2==null)
+				 {
+					return new ResponseEntity("Designation is not present",HttpStatus.BAD_REQUEST);
+				 }
+
+            	 Employee employee1 = new Employee();
+            	 float employ=employee.getJid().getLid();
+            	 float user=desrepo.findByJobTitle(t.getJobTitle()).getLid();
+				 float employ2=emprepo.findById(employee.getManagerId()).getJid().getLid();
+            	 if(employ>=user && user>employ2)
+				 {   Integer manager=employee.getManagerId();
+					emprepo.delete(employee);
+					employee1.setName(t.getName());
+					employee1.setManagerId(manager);
+					employee1.setJid(desrepo.findByJobTitle(t.getJobTitle()));
+					emprepo.save(employee1);
+					List<Employee> l = emprepo.findAllByManagerId(id, Sort.by("name"));
+					for (int i = 0; i < l.size(); i++) {
+						Employee e3 = l.get(i);
+						e3.setManagerId(employee1.getId());
+						emprepo.save(e3);
+					}
+					return new ResponseEntity(employee1,HttpStatus.OK);
+				 }
+            	 else {
+					return new ResponseEntity("cannot be replaced",HttpStatus.BAD_REQUEST);
+				 }
+				/*if (t.getManagerId() <= 0) {
+					employee1.setManagerId(employee.getManagerId());
+				} else {
+					employee1.setManagerId(t.getManagerId());
+				}*/
+               }
+
+            else
+            	{
+             		Employee employee1=emprepo.findById(id);
+
+				 if(t.getJobTitle()!=null)
+				 {
+					Designation designation2=desrepo.findByJobTitle(t.getJobTitle());
+					if(employee.getJobTitle().equals("Director")){
+						return new ResponseEntity("can't change director",HttpStatus.BAD_REQUEST);
+					}
+					if(designation2==null)
+					{
+					return new ResponseEntity("No designation present",HttpStatus.BAD_REQUEST);
+					}
+					float employ=employee1.getJid().getLid();
+					float child=0;
+					List<Employee> lis=emprepo.findAllByManagerId(id,Sort.by("name"));
+					if(lis.size()>0){
+						child=lis.get(0).getJid().getLid();
+					}
+					float self=desrepo.findByJobTitle(t.getJobTitle()).getLid();
+					float parent=emprepo.findById(employee.getManagerId()).getJid().getLid();
+					if(employ<child && self>parent)
+					{
+						employee1.setJid(desrepo.findByJobTitle(t.getJobTitle()));
+					}
+					else
+					{
+						return new ResponseEntity(HttpStatus.BAD_REQUEST);
+					}
+
+				 }
+				 if(t.getManagerId()!=null){
+                                          employee1.setManagerId(t.getManagerId());
+/*
+						float employ=employee1.getJid().getLid();
+						Employee employee3=emprepo.findByIdOrderById(t.getManagerId());
+						String str=employee3.getJid().getJobTitle();
+						float parent=desrepo.findByJobTitle(str).getLid();
+						if(employ>parent)
+						{
+							employee1.setJid(desrepo.findByJobTitle(t.getJobTitle()));
+						}
+						else
+						{
+							return new ResponseEntity(HttpStatus.BAD_REQUEST);
+						}*/
+				 }
+				 else{
+				 employee1.setManagerId(employee.getManagerId());
+				 }
+
+				 if(t.getName()!=null){
+				 	employee1.setName(t.getName());
+				 }
+				 emprepo.save(employee1);
+				 return new ResponseEntity(employee1,HttpStatus.OK);
+
+            	}}
+
+		          /*if(a<b)
+		          {
+		              return new ResponseEntity("designation cannot be same or higher",HttpStatus.BAD_REQUEST);
+		          }*/
 
 
-	       Empl e2=new Empl();
-	       e2.setName(t.getName());
-	       if(!t.getDesi().equals(e.getDesi())){ }
-	       e2.setDesi(t.getDesi());
-	       e2.setPid(e.getPid());
-	       d2=rs.findBydesi(t.getDesi());
-	       e2.setJid(d2);
-	       r.save(e2);
-	       int a=e2.getId();
-
-	        List<Empl> l=r.findAllByPid(id);
-	        for(int i=0;i<l.size();i++)
-	        {
-		       Empl e3=l.get(i);
-		       e3.setPid(a);
-	        }
-
-	         if(t.isDelete())
-			 {
-			 	r.deleteById(id);
-				 return new ResponseEntity("Record Replaced",HttpStatus.OK);
-			 }
+			 return new ResponseEntity("User doesn't exist",HttpStatus.OK);
 
 
-	          return new ResponseEntity("Record Replaced",HttpStatus.OK);
-         }
 
 
-       else
-    	   {
-	         if(t==null)
-	          {
-		        return new ResponseEntity("no data entered ? Insert Data",HttpStatus.BAD_REQUEST);
-	          }
+		 }
 
-	              e.setName(t.getName());
-	              e.setPid(t.getPid());
-	              if(t.getDesi().equals("Director"))
-	              {
-	               return new ResponseEntity("This designation can't be assigned",HttpStatus.BAD_REQUEST);
-	              }
-			      e.setDesi(t.getDesi());
-			      d2=rs.findBydesi(t.getDesi());
-			      e.setJid(d2);
-
-
-	             /* Empl e2=r.findByid(e.getPid());
-		          int a=d.getJid();
-		          int b=e2.getJid().getJid();
-		      if(a<=b) {
-		      return new ResponseEntity("designation cannot be same or higher",HttpStatus.BAD_REQUEST);
-		       }*/
-
-		      r.save(e);
-	          return new ResponseEntity("Record inserted",HttpStatus.OK);
-           }
      }
-  }
+
 
 
 	

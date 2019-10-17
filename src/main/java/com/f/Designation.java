@@ -10,16 +10,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 @Entity
-@Table (name="detail2")
-public class detail2 {
+@Table (name="Designation")
+public class Designation {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@JoinColumn
 	@JsonProperty("id")
-	private int jid;
+	private Integer jid;
 
-	@Column(name="title")
-	private String desi;
+	@Column(name="jobTitle")
+	private String jobTitle;
 
 	@Column(name="level")
 	private float lid;
@@ -32,19 +32,19 @@ public class detail2 {
 	   this.lid = lid;
 	}
 
-	public String getDesi() {
-	    return desi;
+	public String getJobTitle() {
+	    return jobTitle;
 	}
 
-	public void setDesi(String desi) {
-	    this.desi = desi;
+	public void setJobTitle(String jobTitle) {
+	    this.jobTitle = jobTitle;
 	}
 
-	public int getJid() {
+	public Integer getJid() {
 	return jid;
 	}
 
-    public void setJid(int jid) {
+    public void setJid(Integer jid) {
 	  this.jid = jid;
 	}
 }

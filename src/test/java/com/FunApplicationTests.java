@@ -24,6 +24,9 @@ public class FunApplicationTests
 	@Autowired
 	private MockMvc mv;
 	String s="/rest/employees";
+
+	//  Get Test Cases
+
 	   @Test
        public void getallEmployeeAPi() throws Exception
 	   {
@@ -77,6 +80,7 @@ public class FunApplicationTests
 				  .andExpect(status().isBadRequest());
 	  }
 
+	  // Delete Test Cases
 	   @Test
 	   public void deleteforNoExist() throws Exception
 	      {

@@ -26,7 +26,7 @@ public class FunApplication {
        return new Docket(DocumentationType.SWAGGER_2)
 			   .select()
 			   .paths(PathSelectors.any())
-			   .apis(RequestHandlerSelectors.basePackage("com.head.h1"))
+			   .apis(RequestHandlerSelectors.basePackage("com"))
 			   .build()
 			   .apiInfo(apiDetails());
 	}

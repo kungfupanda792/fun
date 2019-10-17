@@ -1,81 +1,83 @@
 package com.f;
 
 
-import com.f.detail2;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name="details")
-public class Empl {
+@Table(name="EMPLOYEE")
+public class Employee {
     @Id
-    @Column(name="e_id")
+    @JsonProperty("id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-private int id;
-    @Column(name="Name",nullable = false)
-private String name;
-    @Column(name="desi",nullable = false)
-    private String desi ;
+    private int id;
+
+    @Column(name="name",nullable = false)
+    private String name;
+
+    @JsonProperty("managerId")
     @JsonIgnore
+    @Column(name="manager")
+    private Integer managerId=-1;
+
     @OneToOne
-    @JoinColumn(name="jid")
-public detail2 jid;
+    @JoinColumn(name="designation")
+    @JsonIgnore
+    private Designation jid;
 
-    public detail2 getJid() {
-	return jid;
-}
+    @JsonIgnore
+    @JsonProperty("jobTitle")
+    @Transient
+    private String jobTitle;
 
-public void setJid(detail2 jid) {
-	this.jid = jid;
-}
- @JsonIgnore
-	@Column(name="pid")
- private int pid;
- 
- public Empl() {}
- 
- 
 
-    public int getId() {
+    public Designation getJid()
+    {
+	  return jid;
+    }
+
+    public void setJid(Designation jid)
+    {
+        this.jid = jid;
+    }
+
+     public Employee() {}
+
+    public int getId()
+    {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(int id)
+    {
         this.id = id;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public String getDesi() {
-        return desi;
+    public int getManagerId()
+    {
+        return managerId;
     }
 
-    public void setDesi(String desi) {
-        this.desi = desi;
+    public void setManagerId(int managerId)
+    {
+        this.managerId = managerId;
     }
 
-
-
-    public int getPid() {
-        return pid;
-    }
-
-    public void setPid(int pid) {
-        this.pid = pid;
+    public String getJobTitle()
+    {
+        return jid.getJobTitle();
     }
 }
