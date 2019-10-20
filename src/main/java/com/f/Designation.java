@@ -16,7 +16,7 @@ public class Designation {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@JoinColumn
 	@JsonProperty("id")
-	private Integer jid;
+	private Integer jid;                                  //  Foreign key
 
 	@Column(name="jobTitle")
 	private String jobTitle;

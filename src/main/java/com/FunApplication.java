@@ -21,7 +21,7 @@ public class FunApplication {
 		System.out.println("hello");
 	}
 	@Bean
-    public Docket swaggerConfiguration()
+    public Docket swaggerConfiguration()               //   Swagger configuration
 	{
        return new Docket(DocumentationType.SWAGGER_2)
 			   .select()
@@ -31,7 +31,7 @@ public class FunApplication {
 			   .apiInfo(apiDetails());
 	}
 
-	   private ApiInfo apiDetails()
+	   private ApiInfo apiDetails()                    //   Swagger customization
 	{
 		 return new ApiInfo(
 				"Employee API",
@@ -42,6 +42,5 @@ public class FunApplication {
 				"API License",
 				 "https://www.empdetail.com",
 				 Collections.emptyList());
-
 	}
 }

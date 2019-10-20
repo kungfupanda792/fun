@@ -1,4 +1,3 @@
-
 insert into Designation values(1,'Director',10)
 insert into Designation values(2,'Manager',20)
 insert into Designation values(3,'Lead',30)

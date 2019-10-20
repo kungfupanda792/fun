@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface record extends JpaRepository<Employee, Integer> {
+public interface Emp_repo extends JpaRepository<Employee, Integer> {
 	Employee findById(int id);
 	Employee findByIdOrderById(Integer id);
 	Employee findByManagerId(Integer i);
