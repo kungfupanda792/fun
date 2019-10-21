@@ -1,12 +1,13 @@
 package com.service;
 
 
+import com.MessageUtil;
 import com.controller.control;
-import com.f.Designation;
-import com.f.Employee;
-import com.f.Infos;
-import com.inter.Emp_repo;
-import com.inter.des_repo;
+import com.Entity.Designation;
+import com.Entity.Employee;
+import com.Entity.Infos;
+import com.repository.Emp_repo;
+import com.repository.des_repo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -24,34 +25,56 @@ public class put_Service {
     des_repo desrepo;
     @Autowired
     control con;
+    @Autowired
+    get_Service serv_get;
+    @Autowired
+    MessageUtil message;
     public ResponseEntity put(Infos t,int id){
         Employee employee=emprepo.findById(id);
-        if(employee==null)
+        Employee employee1 = new Employee();
+
+        if(employee==null || t==null)
         {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
         if(employee.getJobTitle().equals("Director"))
         {
-            return new ResponseEntity("can't change director",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(message.getMessage("update_director_designation"),HttpStatus.BAD_REQUEST);
         }
 
-        if(t.getName()==null && t.getJobTitle()==null && t.getManagerId()==-1 )
+        if(t.getName()==null && t.getJobTitle()==null )
         {
-            return new ResponseEntity("No Data Entered",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(message.getMessage("no_data"),HttpStatus.BAD_REQUEST);
         }
+
         if(t.isReplace())
         {
             Designation designation2=desrepo.findByJobTitle(t.getJobTitle());
             if(designation2==null) {
-                return new ResponseEntity("Designation is not present",HttpStatus.BAD_REQUEST);
+                return new ResponseEntity(message.getMessage("designation_not_present"),HttpStatus.BAD_REQUEST);
             }
 
-            if(t.getManagerId()<-1 || t.getManagerId()==null){
-                return  new ResponseEntity("Not Valid Manager Id ",HttpStatus.BAD_REQUEST);
+            if(t.getManagerId()==null){
+                  Integer par=employee.getManagerId();
+                  employee1.setName(t.getName());
+                  employee1.setManagerId(par);
+                  employee1.setJid(desrepo.findByJobTitle(t.getJobTitle()));
+                  emprepo.save(employee1);
+                  int emp=employee1.getId();
+                  List<Employee> ls=emprepo.findAllByManagerId(id,Sort.by("name"));
+                  for(int i=0;i<ls.size();i++){
+                      Employee employee2=ls.get(i);
+                      employee2.setManagerId(emp);
+                  }
+                  emprepo.deleteById(id);
+                  return serv_get.get(employee1.getId());
             }
 
-            Employee employee1 = new Employee();
+            if(t.getManagerId()<-1){
+                return  new ResponseEntity(message.getMessage("invalid_manager"),HttpStatus.BAD_REQUEST);
+            }
+
             float employ=employee.getJid().getLid();
             float user=desrepo.findByJobTitle(t.getJobTitle()).getLid();
             float employ2=emprepo.findById(employee.getManagerId()).getJid().getLid();
@@ -71,23 +94,24 @@ public class put_Service {
                 return con.get(employee1.getId());
             }
             else {
-                return new ResponseEntity("cannot be replaced",HttpStatus.BAD_REQUEST);
+                return new ResponseEntity(message.getMessage("cannot_replace"),HttpStatus.BAD_REQUEST);
             }
 
         }
 
         else
         {
-            Employee employee1=emprepo.findById(id);
+
+            Employee employee3=emprepo.findById(id);
 
             if(t.getJobTitle()!=null)
             {
                 Designation designation2=desrepo.findByJobTitle(t.getJobTitle());
                 if(designation2==null)
                 {
-                    return new ResponseEntity("No designation present",HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity(message.getMessage("designation_not_present"),HttpStatus.BAD_REQUEST);
                 }
-                float employ=employee1.getJid().getLid();
+                float employ=employee3.getJid().getLid();
                 float child=0;
                 List<Employee> lis=emprepo.findAllByManagerId(id,Sort.by("jid"));
                 if(lis.size()>0){
@@ -97,37 +121,37 @@ public class put_Service {
                 float parent=emprepo.findById(employee.getManagerId()).getJid().getLid();
                 if(self<child && self>parent)
                 {
-                    employee1.setJid(desrepo.findByJobTitle(t.getJobTitle()));
+                    employee3.setJid(desrepo.findByJobTitle(t.getJobTitle()));
                 }
                 else
                 {
-                    return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity(message.getMessage("replace"),HttpStatus.BAD_REQUEST);
                 }
             }
 
             else
             {
-                employee1.setJid(employee.getJid());
+                employee3.setJid(employee.getJid());
             }
-            emprepo.save(employee1);
+            emprepo.save(employee3);
 
             if(t.getManagerId()!=null){
 
-                employee1.setManagerId(t.getManagerId());
+                employee3.setManagerId(t.getManagerId());
             }
             else{
-                employee1.setManagerId(employee.getManagerId());
+                employee3.setManagerId(employee.getManagerId());
             }
 
             if(t.getName()!=null){
-                employee1.setName(t.getName());
+                employee3.setName(t.getName());
             }
             else
             {
-                employee1.setName(employee.getName());
+                employee3.setName(employee.getName());
             }
-            emprepo.save(employee1);
-            return con.get(employee1.getId());
+            emprepo.save(employee3);
+            return con.get(employee3.getId());
 
         }
     }

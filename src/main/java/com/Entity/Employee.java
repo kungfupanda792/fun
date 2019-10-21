@@ -1,15 +1,16 @@
-package com.f;
+package com.Entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-
 import javax.persistence.*;
 
+
+/*.........................Employee Record Entity............................*/
 @Entity
 @Table(name="EMPLOYEE")
 public class Employee {
+
     @Id
     @JsonProperty("id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)

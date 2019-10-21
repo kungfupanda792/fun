@@ -1,8 +1,9 @@
 package com.service;
 
-import com.f.Employee;
-import com.inter.Emp_repo;
-import com.inter.des_repo;
+import com.Entity.Employee;
+import com.MessageUtil;
+import com.repository.Emp_repo;
+import com.repository.des_repo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -16,21 +17,23 @@ public class delete_Service {
     Emp_repo emprepo;
     @Autowired
     des_repo desrepo;
+    @Autowired
+    MessageUtil message;
     public ResponseEntity delete(int id){
         if(id<=0)                                                // to check for invalid id
         {
-            return new ResponseEntity("Invalid id", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(message.getMessage("invalid_id"), HttpStatus.BAD_REQUEST);
         }
 
         Employee e=emprepo.findById(id);
         if(e==null)                                              // to check whether such employee exist or not
         {
-            return new ResponseEntity("No such record exist",HttpStatus.NOT_FOUND);
+            return new ResponseEntity(message.getMessage("no_record"),HttpStatus.NOT_FOUND);
         }
 
         if(e.getJid().getJobTitle().equals("Director"))          // to check if director is getting deleted
         {
-            return new ResponseEntity("Invalid record for deletion, can't delete Director",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(message.getMessage("delete_director"),HttpStatus.BAD_REQUEST);
         }
 
         int p=e.getManagerId();
@@ -41,6 +44,6 @@ public class delete_Service {
             e2.setManagerId(p);
         }
         emprepo.deleteById(id);                                         // to delete that particular record
-        return new ResponseEntity(e,HttpStatus.NO_CONTENT);
+        return new ResponseEntity(message.getMessage("record_deleted"),HttpStatus.NO_CONTENT);
     }
 }

@@ -1,8 +1,9 @@
 package com.service;
 
-import com.f.Employee;
-import com.inter.Emp_repo;
-import com.inter.des_repo;
+import com.Entity.Employee;
+import com.MessageUtil;
+import com.repository.Emp_repo;
+import com.repository.des_repo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ public class get_Service {
     Emp_repo emprepo;
     @Autowired
     des_repo desRepo;
+    @Autowired
+    MessageUtil message;
 
     public List<Employee> friend(List<Employee> ob, int id) {                            // Add data (get call)
         List<Employee> a = new ArrayList<>();
@@ -35,23 +38,23 @@ public class get_Service {
         Employee e2 = emprepo.findById(empid);
         Map<String, Object> hm = new LinkedHashMap<>();
         if(empid<=0) {                                                       //  to check for invalid id
-            return new ResponseEntity("Invalid Employee Id,can't be zero or -ive", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(message.getMessage("invalid_id"), HttpStatus.BAD_REQUEST);
         }
 
         if(e2==null){                                                       // to check if such record exists or not
-            return  new ResponseEntity("No Record Exist",HttpStatus.NOT_FOUND);
+            return  new ResponseEntity(message.getMessage("no_record"),HttpStatus.NOT_FOUND);
         }
 
         //detail
         String g = e2.getName();
-        hm.put("employee", e2);                             // to add employee data in map
+        hm.put("employee", e2);                                             // to add employee data in map
         int p = e2.getManagerId();
 
         //manager
         Employee e4 = emprepo.findById(p);
         if (e4 == null) {
         } else {
-            hm.put("manager", e4);                          // to add manager record in map
+            hm.put("manager", e4);                                           // to add manager record in map
         }
 
         //colleague

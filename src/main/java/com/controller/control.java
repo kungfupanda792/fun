@@ -1,19 +1,16 @@
 package com.controller;
 
-import java.util.*;
-
 import com.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.f.Employee;
-import com.f.Designation;
-import com.inter.Emp_repo;
-import com.inter.des_repo;
-import com.f.Infos;
+import com.Entity.Employee;
+import com.Entity.Designation;
+import com.repository.Emp_repo;
+import com.repository.des_repo;
+import com.Entity.Infos;
 
 @RestController
 public class control {

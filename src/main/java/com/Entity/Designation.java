@@ -1,4 +1,4 @@
-package com.f;
+package com.Entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.Column;
@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
+/* ......................... DESIGNATION TABLE...................*/
 @Entity
 @Table (name="Designation")
 public class Designation {
@@ -16,7 +17,7 @@ public class Designation {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@JoinColumn
 	@JsonProperty("id")
-	private Integer jid;                                  //  Foreign key
+	private Integer jid;                                             //  Foreign key
 
 	@Column(name="jobTitle")
 	private String jobTitle;

@@ -1,13 +1,12 @@
-package com.inter;
+package com.repository;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.f.Employee;
+import com.Entity.Employee;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface Emp_repo extends JpaRepository<Employee, Integer> {

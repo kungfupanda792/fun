@@ -1,8 +1,8 @@
-package com.f;
+package com.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+/*.......................... Temporary Setter and Getter Table............................*/
 public class Infos {
+
 private Integer id=-1;
 
 private String name=null;
@@ -21,6 +21,7 @@ private boolean replace=false;
 	}
 
 	private boolean delete=false;
+
     public Infos(String name,String jobTitle,Integer managerId,boolean replace)
 	{
 	   this.name=name;
