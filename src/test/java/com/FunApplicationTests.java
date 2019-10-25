@@ -23,14 +23,14 @@ public class FunApplicationTests
 
 	@Autowired
 	private MockMvc mv;
-	String s="/rest/employees";
+	String s="/employees";
 
 	//  Get Test Cases
 
 	   @Test
        public void getallEmployeeAPi() throws Exception
 	   {
-           mv.perform(get(s+"/all"))
+           mv.perform(get(s))
 				   .andDo(print())
 				   .andExpect(jsonPath("$").isArray())
 				   .andExpect(status().isOk());
@@ -39,7 +39,7 @@ public class FunApplicationTests
 	   @Test
 	   public void getoneEmployeeRecordAPi() throws Exception
 	   {
-		 mv.perform(get(s+"/get/{id}",1))
+		 mv.perform(get(s+"/{id}",1))
 				.andDo(print())
 				.andExpect(jsonPath("$").isMap())
 				.andExpect(status().isOk());
@@ -49,7 +49,7 @@ public class FunApplicationTests
 	  @Test
 	  public void getOneEmployeeRecord2APi() throws Exception
 	  {
-		mv.perform(get(s+"/get/{id}",2))
+		mv.perform(get(s+"/{id}",2))
 				.andDo(print())
 				.andExpect(jsonPath("$").isMap())
 				.andExpect(status().isOk());
@@ -59,15 +59,15 @@ public class FunApplicationTests
 	  @Test
 	  public void EmployeeNotfoundOrDoesNotExistApi() throws Exception
 	  {
-		mv.perform(get(s+"/get/{id}",15))
+		mv.perform(get(s+"/{id}",15))
 				.andDo(print())
-				.andExpect(status().isNoContent());
+				.andExpect(status().isNotFound());
 	  }
 
 	  @Test
 	  public void EmployeeidInvalidApi() throws Exception
 	  {
-		mv.perform(get(s+"/get/{id}",0))
+		mv.perform(get(s+"/{id}",0))
 				.andDo(print())
 				.andExpect(status().isBadRequest());
 	  }
@@ -75,7 +75,7 @@ public class FunApplicationTests
 	  @Test
 	  public void EmployeeIdNegativeApi() throws Exception
 	  {
-		  mv.perform(get(s+"/get/{id}",0))
+		  mv.perform(get(s+"/{id}",0))
 				  .andDo(print())
 				  .andExpect(status().isBadRequest());
 	  }
@@ -84,14 +84,14 @@ public class FunApplicationTests
 	   @Test
 	   public void deleteforNoExist() throws Exception
 	      {
-	 	    mv.perform((delete(s+"/del/{id}", 14)))
+	 	    mv.perform((delete(s+"/{id}", 14)))
 					.andDo(print())
-					.andExpect(status().isNoContent());
+					.andExpect(status().isNotFound());
 	      }
 	      @Test
 	      public  void  deleteNoDirector() throws Exception
 		   {
-	   	     mv.perform(delete(s+"/del/{id}",1))
+	   	     mv.perform(delete(s+"/{id}",1))
 					.andDo(print())
 					.andExpect(status().isBadRequest());
 		   }
@@ -99,9 +99,9 @@ public class FunApplicationTests
 		   @Test
 	       public void deleteSuccessFull() throws Exception
 		   {
-	   	     mv.perform(delete(s+"/del/{id}",3))
+	   	     mv.perform(delete(s+"/{id}",3))
 					 .andDo(print())
-					 .andExpect(status().isOk());
+					 .andExpect(status().isNoContent());
 		   }
 
 
